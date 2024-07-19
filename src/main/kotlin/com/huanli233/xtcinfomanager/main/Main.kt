@@ -13,7 +13,7 @@ object Main {
     @JvmStatic
     fun main(args: Array<String>) {
         println("XTCInfoManager V1.2.0")
-        println("https://github.com/huanli233/XTCDecrypter")
+        println("https://github.com/huanli233/XTCInfoManager")
 
         // Init File
         val soFile = File("libxtcSecurity.so")
