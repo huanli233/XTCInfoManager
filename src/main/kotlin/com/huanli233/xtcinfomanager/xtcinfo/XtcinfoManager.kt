@@ -1,4 +1,4 @@
-package com.huanli233.xtcinfomanager.extractor
+package com.huanli233.xtcinfomanager.xtcinfo
 
 import com.huanli233.xtcinfomanager.utils.XTCKeyUtil
 import java.io.File

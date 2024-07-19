@@ -2,7 +2,7 @@ package com.huanli233.xtcinfomanager.main
 
 import com.huanli233.utils.FileUtil
 import com.huanli233.utils.InputUtil
-import com.huanli233.xtcinfomanager.extractor.XtcinfoManager
+import com.huanli233.xtcinfomanager.xtcinfo.XtcinfoManager
 import com.huanli233.xtcinfomanager.utils.XTCKeyUtil
 import org.apache.log4j.BasicConfigurator
 import org.apache.log4j.Level
