@@ -1,4 +1,4 @@
-package java.com.huanli233.xtcdecrypter.utils
+package com.huanli233.xtcinfomanager.utils
 
 import java.util.regex.Pattern
 

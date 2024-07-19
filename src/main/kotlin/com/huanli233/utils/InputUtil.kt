@@ -1,4 +1,4 @@
-package java.com.huanli233.utils
+package com.huanli233.utils
 
 import java.util.*
 

@@ -3,19 +3,20 @@ package com.huanli233.xtcinfomanager.extractor
 import com.huanli233.xtcinfomanager.utils.XTCKeyUtil
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.IOException
 
-class XtcinfoExtractor {
-    fun run(path: String) {
+
+class XtcinfoManager {
+    fun runExtract(path: String) {
         // Check file
-        val file: File = File(path)
+        val file = File(path)
         if (!(file.exists() && file.isFile())) {
             System.err.println("! xtcinfo 文件不存在或不是文件。")
             return
         }
 
         println("正在尝试从 xtcinfo 中提取 key。")
-
 
         // Start extract key
         val result = getSecurityKeyFromXtcInfo(file)
@@ -31,6 +32,82 @@ class XtcinfoExtractor {
             println("提取失败。请检查你的 xtcinfo 文件是否有效或你是否确信其中保存了 key。")
         }
     }
+
+    fun runWrite(path: String, content: String) {
+        // Check file
+        val file = File(path)
+        if (!(file.exists() && file.isFile())) {
+            System.err.println("! xtcinfo 文件不存在或不是文件。")
+            return
+        }
+
+        if (!XTCKeyUtil.checkKey(content)) {
+            println("! 输入的 key 不合法。")
+            return
+        }
+
+        println("正在尝试写入 key。")
+
+        val result = try {
+            setSecurityKeyToXtcInfo(file, content)
+        } catch (e: Exception) {
+            println("发生未知错误：")
+            e.printStackTrace()
+            return
+        }
+
+        if (result) {
+            println("写入成功！")
+        } else {
+            println("写入失败！")
+        }
+    }
+
+    fun setSecurityKeyToXtcInfo(file: File, str: String): Boolean {
+        val bArr = ByteArray(3608)
+        try {
+            val fileInputStream = FileInputStream(file)
+            fileInputStream.read(bArr, 0, 3608)
+            fileInputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        try {
+            val fileOutputStream = FileOutputStream(file)
+            val bytes = str.toByteArray()
+            val calculateCRC = calculateCRC(bytes, bytes.size)
+            bArr[2048] = (bytes.size and 255).toByte()
+            bArr[2049] = ((bytes.size shr 8) and 255).toByte()
+            bArr[2050] = ((bytes.size shr 16) and 255).toByte()
+            bArr[2051] = ((bytes.size shr 24) and 255).toByte()
+            bArr[2052] = (calculateCRC and 255).toByte()
+            bArr[2053] = ((calculateCRC shr 8) and 255).toByte()
+            bArr[2054] = ((calculateCRC shr 16) and 255).toByte()
+            bArr[2055] = ((calculateCRC shr 24) and 255).toByte()
+            System.arraycopy(bytes, 0, bArr, 2056, bytes.size)
+            var i = 0
+            while (i < 2) {
+                i++
+                System.arraycopy(
+                    bArr,
+                    2048,
+                    bArr,
+                    (i * 520) + 2048,
+                    520
+                )
+            }
+            fileOutputStream.write(bArr)
+            fileOutputStream.close()
+        } catch (e2: IOException) {
+            e2.printStackTrace()
+        }
+        val securityKeyFromXtcInfo = getSecurityKeyFromXtcInfo(file)
+        if (securityKeyFromXtcInfo == null || securityKeyFromXtcInfo != str) {
+            return false
+        }
+        return true
+    }
+
 
     private fun getSecurityKeyFromXtcInfo(file: File): String? {
         var str: String? = null

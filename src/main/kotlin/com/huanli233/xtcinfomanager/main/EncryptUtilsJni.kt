@@ -1,4 +1,4 @@
-package java.com.huanli233.xtcdecrypter.main
+package com.huanli233.xtcinfomanager.main
 
 import com.github.unidbg.AndroidEmulator
 import com.github.unidbg.Emulator
@@ -17,7 +17,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-class EncryptUtilsJni(soFilePath: String?, classPath: String?) : AbstractJni() {
+class EncryptUtilsJni(soFilePath: String, classPath: String) : AbstractJni() {
     // ARM模拟器
     private val emulator: AndroidEmulator = object : AndroidARMEmulator(
         File(soFilePath).name,
@@ -101,18 +101,18 @@ class EncryptUtilsJni(soFilePath: String?, classPath: String?) : AbstractJni() {
     companion object {
         const val methodSign: String = "secretKeyDecrypt(Ljava/lang/String;)Ljava/lang/String;"
         const val methodSign1: String = "secretKeyEncrypt(Ljava/lang/String;)Ljava/lang/String;"
-        var instance: EncryptUtilsJni? = null
-        fun getInstance(): EncryptUtilsJni? {
-            if (instance == null) {
+        private var INSTANCE: EncryptUtilsJni? = null
+        fun getInstance(): EncryptUtilsJni {
+            if (INSTANCE == null) {
                 val soFilePath = "libxtcSecurity.so"
                 val classPath = "com/xtc/utils/security/XtcSecurity"
                 try {
-                    instance = EncryptUtilsJni(soFilePath, classPath)
+                    INSTANCE = EncryptUtilsJni(soFilePath, classPath)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
             }
-            return instance
+            return INSTANCE!!
         }
     }
 }
