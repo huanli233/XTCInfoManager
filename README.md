@@ -1,6 +1,6 @@
 # XTCInfoManager
 
-Management tool for XTC's SelfRsaPpublicKey
+Management tool for XTC's SelfRsaPublicKey
 
 可从字符串对桌面数据库中的 key 进行解密或对 xtcinfo 中的 key 进行读写。
 
